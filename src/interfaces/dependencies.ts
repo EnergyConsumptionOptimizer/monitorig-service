@@ -22,6 +22,7 @@ import { MeasurementMaintenanceServiceImpl } from "@application/MeasurementMaint
 import { MeasurementMaintenanceController } from "@interfaces/web-api/controllers/MeasurementMaintenanceController";
 import { ManageSmartFurnitureHookupConnectionController } from "@interfaces/web-api/controllers/ManageSmartFurnitureHookupConnectionController";
 import { MapServiceImpl } from "@interfaces/MapServiceImpl";
+import { SocketAuthMiddleware } from "@interfaces/web-sockets/middleware/SocketAuthMiddleware";
 
 // ===== Repository =====
 export const influxDBClient = new InfluxDBClient(
@@ -84,6 +85,8 @@ export const apiRouter = router(
   monitoringController,
   manageSmartFurnitureHookupConnectionController,
 );
+// ===== Web-Sockets Middlewares =====
+export const socketAuthMiddleware = new SocketAuthMiddleware();
 
 // ===== Web-Sockets Handlers =====
 export const activeSmartFurnitureHookupsHandler =
@@ -106,6 +109,7 @@ export const realTimeUtilityMetersRoom = new RealTimeUtilityMetersRoom(
 export const realTimeNamespace = new RealTimeNamespace(
   activeSmartFurnitureHookupsRoom,
   realTimeUtilityMetersRoom,
+  socketAuthMiddleware,
 );
 
 export const utilityConsumptionSubscription =
